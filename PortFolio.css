@@ -1,0 +1,59 @@
+/* styles.css */
+
+/* 전반적인 스타일링 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header, footer, section {
+    padding: 20px;
+  }
+  
+  /* 헤더 */
+  header {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  header h1 {
+    margin: 0;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 10px;
+  }
+  
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  /* 섹션 */
+  section {
+    margin-bottom: 20px;
+  }
+  
+  section h2 {
+    margin-top: 0;
+  }
+  
+  .project {
+    margin-bottom: 10px;
+  }
+  
+  /* 푸터 */
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+  }
+  
