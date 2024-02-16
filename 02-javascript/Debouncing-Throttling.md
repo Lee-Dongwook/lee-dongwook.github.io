@@ -16,10 +16,10 @@ Throttling(쓰로틀링) : 빈번하게 발생하는 이벤트들을 `일정한 
 import React, { useCallback, useEffect, type ChangeEvent } from 'react';
 import { debounce } from 'lodash';
 
-const SearchComponent = () => {
+const SearchComponent: React.FC = () => {
     const [query, setQuery] = useState<string>('');
 
-    const debouncedSearchResult = useCallback(
+    const debouncedSearch = useCallback(
         debounce((searchQuery: string) => {
           console.log("해당 검색어는: ", searchQuery);
         }, 500),
@@ -29,7 +29,7 @@ const SearchComponent = () => {
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newQuery = event.target.value;
         setQuery(newQuery);
-        debouncedSearchResult(newQuery);
+        debouncedSearch(newQuery);
     };
 
     return (
@@ -38,5 +38,30 @@ const SearchComponent = () => {
         </div>
     )
 }
+
+```
+
+2. Throttling - lodash 라이브러리의 throttle 활용
+
+```ts
+import React, { useState } from 'react';
+import { throttle } from 'lodash';
+
+const CountComponent: React.FC = () => {
+  const [count, setCount ] = useState<number>(0);
+  
+  const throttledIncrement = throttle(() => {
+    console.log("증가시킨 카운트: ", count);
+    setCount(count + 1);
+  }, 1000);
+  
+  return(
+    <div>
+      <p>{count}</p>
+      <button onClick={throttledIncrement}>1초마다 증가시키기</button>
+    </div>
+  )
+}
+
 
 ```
