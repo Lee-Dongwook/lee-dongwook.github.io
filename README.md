@@ -1,7 +1,23 @@
-# Frontend_Study
+# Nextra Docs Template
 
-프론트엔드 개발에 필요한 개념들을 학습하여 정리한 레포지토리입니다.
+This is a template for creating documentation with [Nextra](https://nextra.site).
 
-> 참고 링크 : <https://developer.mozilla.org/ko/>
+[**Live Demo →**](https://nextra-docs-template.vercel.app)
 
-> 참고 서적 : 기초부터 완성까지, 프런트엔드 ( 이재성 | 한정 지음)
+[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+
+## Quick Start
+
+Click the button to clone this repository and deploy it on Vercel:
+
+[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
+
+## Local Development
+
+First, run `pnpm i` to install the dependencies.
+
+Then, run `pnpm dev` to start the development server and visit localhost:3000.
+
+## License
+
+This project is licensed under the MIT License.
