@@ -1,0 +1,32 @@
+# Jest
+
+Facebook에서 만든 JS 테스팅 프레임워크
+
+검증을 실행하는 매처(matcher)와 모킹에 필요한 API들을 대부분 제공    
+
+`jsdom` 환경을 사용하여 브라우저와 동일하게 DOM API 호출 검증이 가능하다.
+
+***
+
+### describe(), it(), test()
+
+```js
+const myFamily = {
+    total: 3,
+};
+
+describe('나의 가족은', () => {
+    test('구성원 수가 3명이다.',() => {
+        expect(myFamily.total).toEqual(3);
+    });
+});
+
+```
+*** 
+
+### Matcher
+
+값이 특정 조건을 만족하는 지 검증할 수 있는 집합
+
+jest에서는 `expect()`를 사용하여 매처를 실행할 수 있고, 직관적이어서 테스트의 의도를 쉽게 파악할 수 있다.
+
