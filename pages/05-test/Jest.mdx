@@ -30,3 +30,22 @@ describe('나의 가족은', () => {
 
 jest에서는 `expect()`를 사용하여 매처를 실행할 수 있고, 직관적이어서 테스트의 의도를 쉽게 파악할 수 있다.
 
+#### Jest에서의 대표적인 Matcher
+
+1. toBe() : 원시 값의 일치 여부 확인 / 객체의 참조 확인
+
+2. toEqual() : 원시 값의 일치 여부 확인 / 객체의 모든 프로퍼티 값을 재귀적으로 비교 검증
+
+3. toHaveBeenCalled() : `spy`를 사용하여 특정 함수가 호출 되었는지를 검증 / `spy` 는 함수의 호출 횟수와 호출 인자를 기록
+
+4. toHaveBeenCalledWith() : `toHaveBeenCalled()`와 유사하며 함수에 넘어가 실행된 특정 인자까지 함께 검증
+
+5. toHaveBeenCalledTimes() : `toHaveBeenCalled()`와 유사하며 함수가 정확히 몇번 호출되었는지 확인 가능
+
+6. toHaveProperty() : 객체의 특정 키 값에 해당하는 프로퍼티 값을 확인
+
+7. toMatch() : 문자열이 정규식에 대응하는 지 확인
+
+8. toMatchObject() : 객체 프로퍼티의 하위 집합이 특정 객체와 일치하는지 확인
+
+9. toThrow() : 특정 상황에서 에러가 발생하는 지 테스트
