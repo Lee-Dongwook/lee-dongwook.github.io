@@ -1,3 +1,26 @@
 {
-    "index": "Introduction"
+    "index": {
+        "title": "Home",
+        "type": "page"
+    },
+    "01-html-css": {
+        "title": "HTML/CSS",
+        "type": "page"
+    },
+    "02-javascript": {
+        "title": "JavaScript",
+        "type": "page"
+    },
+    "03-browser": {
+        "title": "Browser",
+        "type": "page"
+    },
+    "04-network": {
+        "title": "Network",
+        "type": "page"
+    },
+    "05-test": {
+        "title": "Test",
+        "type": "page"
+    }
 }
