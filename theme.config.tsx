@@ -1,18 +1,33 @@
+import { useRouter } from "next/router";
 import React from "react";
-import { DocsThemeConfig } from "nextra-theme-docs";
+import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
   logo: <strong>DongWook's Develop Study!</strong>,
-  head: (
-    <>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta property="og:title" content="Dongwook_Develop_Study" />
-      <meta
-        property="og:description"
-        content="Nextra Docs Template Based Next Project"
-      />
-    </>
-  ),
+  head: () => {
+    const { asPath, defaultLocale, locale } = useRouter();
+    const { frontMatter } = useConfig();
+    const url =
+      "" + (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
+    return (
+      <>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:url" content={url} />
+        <meta
+          property="og:description"
+          content={frontMatter.description || "Nextra Docs Based Next Project"}
+        />
+      </>
+    );
+  },
+  useNextSeoProps() {
+    const { asPath } = useRouter();
+    if (asPath !== "/") {
+      return {
+        titleTemplate: "%s - Develop Study",
+      };
+    }
+  },
   project: {
     link: "https://github.com/Lee-Dongwook/Frontend_Study",
   },
