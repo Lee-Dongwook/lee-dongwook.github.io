@@ -20,6 +20,12 @@ const config: DocsThemeConfig = {
       </>
     );
   },
+  sidebar: {
+    titleComponent({ title }) {
+      return <div style={{ textAlign: "center" }}>{title}</div>;
+    },
+    defaultMenuCollapseLevel: 1,
+  },
   useNextSeoProps() {
     const { asPath } = useRouter();
     if (asPath !== "/") {
@@ -32,6 +38,7 @@ const config: DocsThemeConfig = {
     link: "https://github.com/Lee-Dongwook/Frontend_Study",
   },
   toc: {
+    float: true,
     backToTop: true,
   },
   docsRepositoryBase: "https://github.com/Lee-Dongwook/Frontend_Study",
