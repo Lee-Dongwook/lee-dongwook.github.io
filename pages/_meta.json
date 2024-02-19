@@ -6,5 +6,9 @@
     "FE": {
         "title": "FE",
         "type": "page"
+    },
+    "BE": {
+        "title": "BE",
+        "type": "page"
     }
 }
