@@ -22,5 +22,9 @@
     "05-test": {
         "title": "Test",
         "type": "page"
+    }, 
+    "06-dev-tool": {
+        "title": "Dev Tool",
+        "type": "page"
     }
 }
