@@ -19,5 +19,8 @@
     },
     "07-performance": {
         "title": "Performance"
+    },
+    "08-react": {
+        "title": "React"
     }
 }
