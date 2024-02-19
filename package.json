@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Nextra docs template for FE Study",
   "private": true,
-  "homepage": "http://lee-dongwook.github.io/",
+  "homepage": "https://Lee-Dongwook.github.io/",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
