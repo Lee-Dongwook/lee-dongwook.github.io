@@ -26,5 +26,9 @@
     "06-dev-tool": {
         "title": "Dev Tool",
         "type": "page"
+    },
+    "07-performance": {
+        "title": "Performance",
+        "type": "page"
     }
 }

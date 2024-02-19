@@ -1,0 +1,51 @@
+# Rendering Block (렌더링 블록)
+
+브라우저의 HTML 렌더링을 막는 것 (ex : HTML 파싱 중 JavaScript 코드가 있거나 CSS가 있는 경우 등)
+
+**블록 리소스(Block resource) : 렌더링 블록의 원인이 되는 리소스 / 브라우저의 렌더링 과정(Critical Rendering Path)를 지연시킴**
+
+*** 
+
+### CSS의 렌더링 블록
+
+CSS를 모두 파싱해야 CSSOM 트리를 구성할 수 있다. 
+
+만약 CSSOM 트리가 완전히 구성되지 않았다면 렌더 트리를 만들지 못하여 브라우저의 렌더링이 차단된다.
+
+#### 불필요한 CSS 렌더링 블록 막는 방법
+
+##### 1. `@import` 사용
+
+```JavaScript
+@import url("reset.css")
+@import url("content.css")
+```
+@import 규칙을 사용하여 다른 스타일 시트의 스타일 규칙을 가져오는 방식
+
+CSS 종속성을 동일한 파일에서 깔끔하게 유지할 수 있으나, 성능 측면에서 바람직한 방법은 아님
+
+@import로 가져온 스타일 시트를 병렬로 다운로드 할 수 없어 CSS 파싱을 위한 시간이 증가됨
+
+##### 2. inline CSS
+
+```html
+<head>
+<style>
+.container {
+    position: relative;
+}
+</style>
+</head>
+```
+inline CSS의 경우 HTML문서의 `<style>` 태그 내부에 CSS를 직접 삽입하는 방식이다.
+
+파일을 다운로드하기 위한 리소스 요청은 줄어들지만, 용량이 큰 CSS 파일의 경우엔 inline CSS 방식으로도 렌더링이 지연될 수 있다.
+
+##### 3. critical CSS 
+
+구글에서 소개한 초기 렌더링 성능 향상을 위한 기법으로, 초기 뷰포트 영역(Above The Fold 영역)에 렌더링에 중요한 CSS들만 추출하여 inline CSS로 삽입하는 방식이다.
+
+*** 
+
+### JavaScript의 렌더링 블록
+
