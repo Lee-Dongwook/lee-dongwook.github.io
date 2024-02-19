@@ -6,6 +6,7 @@ const withNextra = require('nextra')({
   module.exports = {
     ...withNextra(),
     output: 'export',
+    assetPrefix: process.env.NODE_ENV === 'production' ? 'https://Lee-Dongwook.github.io/': '',
     images: {
       unoptimized: true,
     }
