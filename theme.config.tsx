@@ -6,7 +6,7 @@ const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/Lee-Dongwook/Frontend_Study",
   },
-  docsRepositoryBase: "https://github.com/shuding/nextra-docs-template",
+  docsRepositoryBase: "https://github.com/Lee-Dongwook/Frontend_Study",
   footer: {
     text: "꾸준한 기록과 학습을",
   },
