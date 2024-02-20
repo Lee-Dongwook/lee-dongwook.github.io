@@ -1,0 +1,26 @@
+name: Deploy Github IO
+
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+ build-and-deploy:
+  runs-on: ubuntu-latest
+  steps: 
+  - name: Checkout
+    uses: actions/checkout@v3
+
+  - name: Package Install
+    uses: pnpm install
+
+  - name: Build Next App
+    uses: pnpm build
+
+  - name: Deploy to gh-pages
+    uses: pnpm run deploy
+
+
+
