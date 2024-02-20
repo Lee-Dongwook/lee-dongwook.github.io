@@ -22,7 +22,7 @@ const config: DocsThemeConfig = {
   },
   sidebar: {
     titleComponent({ title }) {
-      return <div style={{ textAlign: "center" }}>{title}</div>;
+      return <div>{title}</div>;
     },
     defaultMenuCollapseLevel: 1,
   },

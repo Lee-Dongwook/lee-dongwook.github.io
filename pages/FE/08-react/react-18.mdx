@@ -2,9 +2,35 @@
 
 ### Automatic Batching (자동 배치)
 
+배치(Batch) : React가 더 나은 성능을 위해 여러 개의 상태 업데이트를 한 번의 리렌더링(re-render)으로 묶는 작업
+
+이전 버전까지는 React 이벤트 핸들러 내에서만 배치 작업이 수행되었고, Promise 내부의 업데이트, setTimeout, 기본 이벤트 핸들러, 기타 이벤트에는 처리되지 않았다.
+
+React 18부터 자동 배치 기능이 추가되었고, React 이벤트 핸들러 외에도 자동으로 배치 적용이 된다.
+
+자동 배치를 사용하기 위해서는 `ReactDOM.createRoot` 함수를 사용해야 한다.
+
+또한, 상태 업데이트에 자동 배치가 적용되지 않은 경우 `ReactDOM.flushSync`함수를 사용하여 적용이 가능하다. 
+
+
 ### Transition (전환)
 
-### Suspense 지원하는 서버 사이드 렌더링 아키텍처
+긴급한 업데이트와 그렇지 않은 업데이트를 명시적으로 구분하는 개념이다.
+
+React 18 이전까지는 모든 상태의 업데이트가 동일한 우선순위를 가지고 있었다.
+
+그렇기 때문에 Debounce / Throttle 등의 기법을 활용하여 간접적으로 우선순위를 구분하였다.
+
+React 18부터는 `startTransitionAPI`를 통해 전환 업데이트를 명시적으로 구분한다.  
+
+
+### 서버 사이드 렌더링 아키텍처
+
+React 18부터는 서버 사이드 렌더링이 적용된다.
+
+React.lazy를 서버 사이드 렌더링에서 사용할 수 있게 된다.
+
+pipeToNodeWritable API
 
 ### 새로운 Hook들
 
