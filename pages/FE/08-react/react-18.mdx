@@ -1,6 +1,6 @@
-# React 18
+# React 18 버전 변경사항
 
-### Automatic Batching (자동 배치)
+### 1. Automatic Batching (자동 배치)
 
 **배치(Batch) : React가 더 나은 성능을 위해 여러 개의 상태 업데이트를 한 번의 리렌더링(re-render)으로 묶는 작업**
 
@@ -71,8 +71,9 @@ function handleClick() {
 }
 ...
 ```
+*** 
 
-### Transition (전환)
+#### Transition (전환)
 
 긴급한 업데이트와 그렇지 않은 업데이트를 명시적으로 구분하는 개념이다.
 
@@ -88,7 +89,7 @@ import { testApi } from './api';
 
 function MyComponent() {
   const [data, setData] = useState(null);
-  const [startTransition, isPending] = useTransition({
+  const [isPending, startTransition] = useTransition({
     timeoutMs: 3000, 
   });
 
@@ -129,18 +130,111 @@ function MyComponent() {
 
 export default MyComponent;
 ```
+*** 
+
+### 3. 새로운 Hook들
+
+React 18버전에서 새롭게 등장한 Hook들은 다음과 같다.
+ 
+#### useId()
+
+```js
+const id = useId();
+```
+
+#### useTransition()
+
+```js
+...
+const [isPending, startTransition] = useTransition(() => {
+  timeoutMs: 3000
+}) 
+
+const handleLazyClick = () => {
+  startTransition(() => {
+    setFlag((f) => !f);
+  })
+}
+...
+```
+
+#### useDeferredValue()
+
+```js
+const [data, setData] = useState('');
+const deferredData = useDeferredValue(data); 
+```
+
+#### useSyncExternalStore()
+
+```js
+import { useSyncExternalStore } from 'react';
+
+let nextId = 0;
+let todos = [{id: nextId++, text: 'Todo #1}];
+let listeners = [];
+
+const todoStore = {
+  addTodo() {
+    todos = [...todos, {id: nextId++, text: 'Todo #' + nextId }]
+    emitChange();
+  },
+  subscribe(listener){
+    listeners = [...listeners, listener];
+    return () => {
+      listeners = listeners.filter(l => l !== listener);
+    }
+  },
+  getSnapshot() {
+    return todos;
+  }
+}
+
+function emitChange() {
+  for(let listener of listeners) {
+    listener();
+  }
+}
+
+function TodoApp() {
+  const todos = useSyncExternalStore(todoStore.subscribe, todosStore.getSnapshot);
+
+  return(
+    <div> 
+      <button onClick={() => todoStore.addTodo()}>Add</button>
+      <hr />
+      {todos.map(todo => (
+        <li key={todo.id}>{todo.text}</li>
+      ))}
+    </div>
+  )
+
+} 
+
+export default TodoApp;
+
+```
+#### useInsertionEffect()
+
+```js
+
+let isInserted = new Set();
+
+function useCSS(rule) {
+  useInsertionEffect(() => {
+    if(!isInserted.has(rule)){
+      isInserted.add(rule);
+      document.head.appendChild(getStyleForRule(rule));
+    }
+  });
+  return rule;
+}
+
+function Button() {
+  const className = useCSS('...');
+  return <div className={className} />
+}
+
+```
 
 
-### 서버 사이드 렌더링 아키텍처
-
-React 18부터는 서버 사이드 렌더링이 적용된다.
-
-React.lazy를 서버 사이드 렌더링에서 사용할 수 있게 된다.
-
-pipeToNodeWritable API
-
-### 새로운 Hook들
-
-
-
-### 새로운 Client 및 Server Rendering API
