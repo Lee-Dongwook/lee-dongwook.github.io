@@ -21,7 +21,55 @@ React 18 이전까지는 모든 상태의 업데이트가 동일한 우선순위
 
 그렇기 때문에 Debounce / Throttle 등의 기법을 활용하여 간접적으로 우선순위를 구분하였다.
 
-React 18부터는 `startTransitionAPI`를 통해 전환 업데이트를 명시적으로 구분한다.  
+React 18부터는 `startTransitionAPI`를 통해 전환 업데이트를 명시적으로 구분한다.
+
+```ts
+import React, { useState, useTransition, Suspense } from 'react';
+import { testApi } from './api';
+
+function MyComponent() {
+  const [data, setData] = useState(null);
+  const [startTransition, isPending] = useTransition({
+    timeoutMs: 3000, 
+  });
+
+  const fetchData = async () => {
+    const receivedData = await testApi();
+    setData(receivedData);
+  };
+
+  const handleFetchData = () => {
+    startTransition(() => {
+      fetchData();
+    });
+  };
+
+  return (
+    <div>
+      {isPending ? (
+        <div>Loading...</div>
+      ) : (
+        <Suspense fallback={<div>Loading...</div>}>
+          <button
+            onClick={handleFetchData}
+            disabled={isPending}
+          >
+            {isPending ? 'Fetching...' : 'Fetch Data'}
+          </button>
+          {data && (
+            <div>
+              <h2>Data:</h2>
+              <p>{data}</p>
+            </div>
+          )}
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+export default MyComponent;
+```
 
 
 ### 서버 사이드 렌더링 아키텍처
