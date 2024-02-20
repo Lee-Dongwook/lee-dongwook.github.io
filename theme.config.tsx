@@ -43,7 +43,7 @@ const config: DocsThemeConfig = {
   },
   docsRepositoryBase: "https://github.com/Lee-Dongwook/Frontend_Study",
   footer: {
-    text: "꾸준한 기록과 학습을",
+    text: "오늘의 학습이 내일 나의 실력이 된다고 생각합니다.",
   },
 };
 
