@@ -1,5 +1,6 @@
 {
     "rendering-block": "Rendering Block(렌더링 블록)",
     "layout-minimize": "Layout Minimize(레이아웃 최소화)",
-    "light-house": "LightHouse"
+    "web-vitals" : "Web Vitals (품질 측정 지표)",
+    "light-house": "LightHouse (라이트 하우스)"
 }
