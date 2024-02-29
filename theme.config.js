@@ -33,7 +33,7 @@ export default {
   navs: [
     
   ],
-  readMore: 'Read Now',
+  readMore: '자세히 읽어보기 →',
   postFooter: (<div>Hello</div>),
   darkMode: true,
 };
