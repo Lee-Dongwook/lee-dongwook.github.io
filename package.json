@@ -8,8 +8,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "serve": "npx http-server out",
-    "deploy": "touch out/.nojekyll && gh-pages -d out --dotfiles"
+    "deploy": "touch out/.nojekyll && gh-pages -d out --dotfiles",
+    "feed": "node scripts/gen-rss.js"
   },
   "author": "Lee-Dongwook",
   "license": "MIT",
