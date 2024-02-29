@@ -1,13 +1,7 @@
-const withNextra = require('nextra')({
-    theme: 'nextra-theme-docs',
-    themeConfig: './theme.config.tsx',
-  })
-  
-  module.exports = {
-    ...withNextra(),
+const withNextra = require('nextra')('nextra-theme-blog', './theme.config.js')
+module.exports = withNextra({ 
     output: 'export',
-    assetPrefix: process.env.NODE_ENV === 'production' ? 'https://Lee-Dongwook.github.io/': '',
     images: {
-      unoptimized: true,
-    }
-  }
+        unoptimized: true
+    },
+})
