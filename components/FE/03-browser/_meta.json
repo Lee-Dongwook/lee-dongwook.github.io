@@ -1,8 +1,0 @@
-{
-    "Bom-Dom": "BOM(브라우저 객체 모델) / DOM(문서 객체 모델)",
-    "Cookie": "쿠키",
-    "Reflow-Repaint": "Reflow(리플로우) / Repaint(리페인트)",
-    "Rendering-Method": "브라우저 렌더링 방식",
-    "Rendering-Process": "브라우저 렌더링 과정",
-    "Web-Storage": "Web Storage(웹 저장소)"
-}

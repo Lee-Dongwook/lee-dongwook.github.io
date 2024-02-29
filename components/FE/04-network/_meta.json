@@ -1,6 +1,0 @@
-{
-    "Cors": "CORS(교차 출처 리소스 공유)",
-    "Http": "HTTP",
-    "Json": "JSON(JavaScript 객체 표기법)",
-    "Web-Socket": "Web Socket(웹 소켓)"
-}
