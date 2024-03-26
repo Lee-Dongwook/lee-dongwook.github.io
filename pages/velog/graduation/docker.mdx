@@ -1,0 +1,119 @@
+
+## Intro
+
+졸업 프로젝트를 진행하면서, 일정 부분의 개발이 완료되면 백엔드 팀원들과 함께 학부 과정에서 배운 기술을 응용하여 서비스를 배포하는 경험을 쌓기로 결정했습니다. 
+
+당시에는 배포와 관련된 부분은 백엔드 팀원 중 한 명이 전담하여 수행했었습니다. 
+
+그러나 현업에서는 배포된 환경에서 작업이 이뤄지는 경우가 많기 때문에 배포 관련 프로세스를 구축하고 이해하는 과정이 필요하다고 생각했습니다. 
+
+이후에는 같이 학습하며 이를 재적용해보았습니다.
+
+
+## Github Actions와 Docker-Compose 활용 연습해보기
+
+ https://github.com/Lee-Dongwook/DockerFile
+
+우선, 제가 이전에 활용해봤던 방법대로 Github Actions의 workflow와 Docker-Compose를 활용하여 React App에 대한 이미지를 빌드하고 Docker Hub에 푸시하는 과정을 진행해봤습니다.
+
+### 1. 클라이언트 Dockerfile 및 Nginx 컨테이너 생성
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/9b5bea93-ba1b-4bcb-9939-52c41b1a36ef/image.png)
+
+먼저 연습해볼 Vite 기반 React 프로젝트를 생성합니다.
+
+`pnpm create vite@latest client --template react-ts`
+
+클라이언트 프로젝트 내부에 위 사진과 같이 `Dockerfile`, `nginx/default.conf`를 생성합니다. 
+
+***
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/80fe1f56-67e8-46d8-9b7b-b0682cfa8216/image.png)
+
+**1. React 애플리케이션을 빌드하기 위해 필요한 Node.js 환경을 제공합니다.**
+
+```Dockerfile
+FROM node:18-alpine as builder
+```
+
+**2. 빌드를 위한 작업 디렉토리를 설정하고, package.json 파일을 복사한 후, 패키지 매니저로 pnpm을 사용하여 필요한 의존성을 설치합니다.**
+
+
+```Dockerfile
+WORKDIR /usr/src/app
+COPY package.json ./
+RUN npm install -g pnpm
+RUN pnpm install
+```
+
+**3. React 애플리케이션을 빌드하는 과정으로 소스 코드를 번들링하여 정적 파일을 생성합니다.**
+
+```Dockerfile
+COPY ./ ./
+RUN pnpm run build
+```
+
+**4. 빌드가 완료된 React 앱을 제공하기 위해 Nginx 서버를 활용합니다.**
+
+```Dockerfile
+FROM nginx
+EXPOSE 3000
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Nginx를 기반으로 하는 이미지를 사용하고 3000 포트를 엽니다.  
+
+Nginx 설정 파일을 복사한 후, 빌드된 React 앱을 nginx의 HTML 디렉토리로 복사합니다.
+
+마지막으로 Nginx를 실행하는 명령어를 작성합니다.
+
+***
+
+`client/nginx/default.conf`
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/45c4edc3-793e-4fa6-84f1-05a6cdd04ed2/image.png)
+
+Nginx 설정 파일은 Nginx 서버가 React 앱을 제공할 때 필요한 설정을 정의합니다.
+
+Nginx는 3000포트에서 요청을 받아들이고 해당 포트를 통해 응답하며, / 경로에 대한 요청을 처리하도록 지정합니다.
+
+Nginx가 정적 파일을 찾을 위치를 지정하고, index 파일로 사용할 파일을 지정합니다.
+
+요청된 파일을 찾을 때 $uri에 해당하는 파일을 찾고 없으면 $uri/에 해당하는 디렉토리를 찾습니다. 
+
+두 경우 모두 존재하지 않는다면 /index.html 파일을 반환하도록 설정하여 
+
+React Router와 같은 클라이언트 사이드 라우팅을 지원하도록 합니다.
+
+***
+
+### 2. Nginx 컨테이너 설정
+
+루트 디렉토리에 nginx폴더를 생성하고 내부에 `default.conf` 와 `Dockerfile` 을 작성해줍니다.
+
+
+`nginx/default.conf`
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/45043d17-edd4-4f3f-9367-2a77f1589c8c/image.png)
+
+`nginx/Dockerfile`
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/1929054e-0fb1-4936-8eac-a0dc0799b73b/image.png)
+
+***
+
+### 3. docker-compose.yml 파일 작성
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/e69f9cdb-c31c-46a7-a48d-70b582751cc6/image.png)
+
+
+### 4. Github Actions Workflow 작성
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/6656385a-a40e-4cca-9d8b-57af3b1359da/image.png)
+
+
+
+
+

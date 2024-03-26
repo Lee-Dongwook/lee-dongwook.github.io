@@ -1,0 +1,130 @@
+
+**2024.03.23 일부 내용을 수정하였습니다.**
+
+
+### Intro
+
+졸업 프로젝트를 진행하는 과정에서, 사용자가 댓글을 작성하고 ‘입력’ 버튼을 클릭하는 순간 바로 화면에 그 내용이 반영되는 경험을 제공하면 사용자의 만족도를 크게 향상시킬 수 있을 것이라고 생각했다. 구현할 방법을 고민하던 중, React Query 라이브러리를 활용한 낙관적 업데이트 기법을 적용하면 즉각적인 UI 업데이트를 수행하여 응답 속도를 개선할 수 있다는 점을 알게 되었고, 해당 기법을 적용하게 되었다.
+
+<hr />
+
+### Optimistic Update (낙관적 업데이트)
+
+사용자의 변경 요청이 서버에 반영되기 전에 먼저 UI에 변경사항을 적용하는 기술이다.
+
+실제 서버와의 동기화는 백그라운드에서 이루어지며, 변경 사항이 서버에 성공적으로 반영되면 UI의 변경사항이 최종 확정되고, 실패할 경우 초기 상태로 롤백된다.
+
+<hr />
+
+### Tanstack Query(구 React Query)로 낙관적 업데이트 구현하기
+
+[Tanstack Query](https://tanstack.com/query/latest)는 비동기 데이터 작업을 용이하게 관리해주는 라이브러리이다. 서버 상태와 클라이언트 상태를 쉽게 동기화할 수 있으며, 이번 낙관적 업데이트 기능을 구현하기 위해 다음의 과정을 따른다.
+
+
+**1. 데이터 수정 함수 정의**  
+사용자의 입력을 처리하고 서버에 데이터를 전송하는 함수를 정의한다.
+
+**2. useMutation 사용** 
+데이터 수정 함수를 useMutation에 전달하고, 변경 사항을 즉시 UI에 반영하기 위한 로직을 구현한다.
+
+**3. onSuccess 콜백 활용** 
+서버 요청이 성공적으로 완료되면 onSuccess 콜백을 통해 UI를 최종 상태로 업데이트한다.
+
+**4. 롤백 로직 구현** 
+서버 요청이 실패한 경우, 변경 사항을 원래 상태로 롤백하는 로직을 추가한다.
+
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/f11aa0a5-08dd-460c-bbd1-6eef722937db/image.png)
+
+
+<hr />
+
+### 코드 예시 (특정 게시물에 대한 댓글 작성)
+
+
+Tanstack Query에서 제공하는 useMutation API를 활용하였다.
+
+useMutation의 onMutate, onError, onSettled 옵션을 활용하였고, 각 쓰임새는 다음과 같다.
+
+
+**onMutate** : `cancelQueries`를 사용하여 기존 쿼리를 취소하고, 새로운 댓글을 추가하여 새로운 queryData를 만든다. 반환된 `previousComments`의 경우 롤백 시 사용될 이전 상태의 스냅샷. 
+
+**onError** : 요청이 실패하였을 때, UI를 이전 상태로 롤백.
+
+**onSettled** : 요청의 성공, 실패 여부와 상관없이 `invalidateQueries`를 사용하여 관련 쿼리를 무효화함으로써, 서버로부터 최신 상태의 데이터를 다시 가져와 UI에 업데이트한다.
+
+
+```ts
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+
+import type { Comment } from '@/domain/Comment';
+import { getDetailTripInfo } from '@/application/api/detail/getDetailTripInfo';
+import { postCommentToServer } from '@/application/api/detail/postCommentToServer';
+import { CommentProp } from '@/ui/detail/comment/commentProp.types';
+
+export const CommentList = ({ tripUUID }: CommentProp) => {
+  const token = useSelector((state: any) => state.token.token);
+  const location = useLocation();
+  const certainTripKey = location.pathname.split('/');
+  const queryClient = useQueryClient();
+
+  const handleGetCommentList = async () => {
+    const response = await getDetailTripInfo(token, certainTripKey);
+
+    if (response.data) {
+      return response.data.commentList;
+    }
+    return [];
+  };
+
+  const { data: commentList } = useQuery(['comments', tripUUID], () => handleGetCommentList());
+
+  const mutation = useMutation((postToServer) => postCommentToServer(token, postToServer), {
+    onMutate: async (newComment) => {
+      await queryClient.cancelQueries(['comments', tripUUID]);
+
+      const previousComments = queryClient.getQueryData(['comments', tripUUID]);
+
+      queryClient.setQueryData(['comments', tripUUID], (old) => [...old, newComment]);
+
+      return { previousComments };
+    },
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(['comments', tripUUID], context.previousComments);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['comments', tripUUID]);
+    },
+  });
+
+  const handleAddComment = async (review, tripUUID) => {
+    const postToServer = {
+      review,
+      tripUUID,
+    };
+
+    mutation.mutate(postToServer);
+  };
+
+  return (
+    <div>
+      <Button onClick={() => handleAddComment(review, tripUUID)} loading={mutation.isLoading}>
+        댓글 추가
+      </Button>
+    </div>
+  );
+};
+```
+
+<hr />
+
+### 구현 시 실수하였던 점
+
+
+<hr />
+
+#### 참고 문헌
+
+- [Tanstack-Query 공식문서](https://tanstack.com/query/latest)

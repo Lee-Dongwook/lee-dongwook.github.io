@@ -1,0 +1,37 @@
+### Intro
+
+졸업프로젝트에서 여행 일정 검색 기능을 구현했습니다. 처음에는 사용자가 검색어를 입력할 때마다 이벤트가 발생하도록 구현했는데, 이로 인해 서버에 과도한 요청이 발생하고 성능이 저하됨을 발견했습니다. 이에 서버 부하를 줄이고 사용자 경험을 향상시키기 위해 Debouncing 프로그래밍 기법을 적용하게 되었습니다.
+
+
+### Debouncing (디바운싱)
+
+연속적으로 호출되는 함수들 중 가장 마지막 함수만 호출하도록 하는 기법입니다.
+이벤트 핸들러가 너무 자주 호출되는 현상을 방지하기 위하여 보통 일정 시간 지연 후 함수를 1번만 실행합니다.
+
+```ts
+// Navbar.tsx
+
+import { useState, useEffect, useCallback } from 'react';
+import debounce from 'lodash/debounce';
+
+... 
+const [searchTerm, setSearchTerm] = useState<string>('');
+
+const delayedSearch = useCallback(
+    debounce((searchValue) => {
+      navigate(`/search?keyword=${searchValue}`);
+    }, 500),
+    []
+);
+
+const handleChangeSearchTerm = (event) => {
+  delayedSearch(event.target.value);
+};
+
+...
+```
+
+### Throttling (쓰로틀링)
+
+일정 시간 동안 이벤트 핸들러를 한번만 실행할 수 있도록 제어하는 기법입니다.
+

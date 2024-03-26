@@ -1,0 +1,113 @@
+
+## Intro
+
+졸업프로젝트를 수행하며 동행 알림 신청 기능을 구현하게 되었습니다.
+
+서버와의 통신 방법을 결정하는 과정에서 알림 기능의 특성을 고려하여 SSE(Server-Sent Events) 방식을 선택하게 되었습니다.
+
+HTTP, WebSocket 등 다른 통신 방법과는 어떠한 차이가 있는지와 구체적인 구현 방법에 대해 복습하고자 합니다.
+
+***
+
+## HTTP
+
+### Polling
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/cd3b6c8b-9163-4964-99b8-e3c0c7afcc7c/image.jpeg)
+
+클라이언트가 서버에 HTTP 요청을 보내고 이벤트 내용을 전달받는 기본적인 통신 방식입니다.
+
+가장 간편한 방법이지만, 클라이언트가 서버에 계속적인 요청을 진행하는 방식이기 때문에 요청이 많아진다면 서버의 부하가 증가되고, 빠른 응답을 보장받기 어려운 단점이 있습니다.
+
+### Long Polling
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/cc026c41-87e6-4e30-a085-4157b5006d8c/image.jpeg)
+
+서버 측에서 클라이언트의 요청을 받아들이는 시간을 길게 설정하는 통신 방식입니다.
+
+서버에서 클라이언트로 전달할 이벤트가 발생하면 그 순간 응답을 전달하며 연결이 종료되는 방법으로 진행됩니다.
+
+***
+
+## Websocket
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/1ddffeeb-b4ef-4ffe-b6df-5c00b521db2b/image.jpeg)
+
+양방향 통신을 지원하는 컴퓨터 통신 프로토콜입니다.
+
+클라이언트와 서버간의 연결이 계속 유지되어 실시간 데이터 전송을 하는 데 적합한 방법 중 하나입니다.
+
+클라이언트와 서버 간에 소켓 연결을 생성하고, 이를 통해 데이터를 양방향으로 전송할 수 있습니다.
+
+***
+
+## SSE (Server-Sent Event)
+
+![](https://velog.velcdn.com/images/dlehddnr99/post/5f2f2e4f-51d8-4884-93f3-fdb9bdef176a/image.jpeg)
+
+서버에서 클라이언트로 단방향으로 데이터를 전송하는 기법입니다.
+
+클라이언트가 서버에 요청을 보내면, 서버는 이벤트 스트림을 통해 주기적으로 데이터를 전송합니다.
+
+클라이언트는 응답받은 이벤트 스트림을 받아서 처리합니다.
+
+*** 
+
+## 프로젝트에서의 구현 과정
+
+```ts
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
+export const getEventSoruce = (token: string) => {
+  const response = new EventSourcePolyfill('http://localhost:8080/api/sub', {
+    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
+    heartbeatTimeout: 300000,
+  });
+
+  return response;
+};
+```
+
+```ts
+ const createEventSource = () => {
+    const eventSource = getEventSoruce(token);
+
+    eventSource.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      const notificationString = `${message.senderName}님이 \n ${message.review.slice(
+        0,
+        4
+      )}..를 입력하였습니다. \n ${message.postDate}`;
+      dispatch(setNotification(notificationString));
+    };
+
+    eventSource.onclose = () => {};
+
+    setEventSource(eventSource);
+  };
+```
+
+```ts
+  const deleteEventSource = () => {
+    if (eventSource) {
+      eventSource.close();
+      setEventSource(null);
+    }
+  };
+```
+
+```ts
+  useEffect(() => {
+    createEventSource();
+    deleteEventSource();
+	...
+  }, [dispatch, token]);
+```
+
+***
+
+## 참고 문헌
+
+[블로그 - Polling, Long Polling, Server Sent Event, Websocket 요약 정리](https://inpa.tistory.com/entry/WEB-%F0%9F%93%9A-Polling-Long-Polling-Server-Sent-Event-WebSocket-%EC%9A%94%EC%95%BD-%EC%A0%95%EB%A6%AC)
+

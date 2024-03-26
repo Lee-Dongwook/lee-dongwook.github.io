@@ -1,0 +1,57 @@
+### Intro
+
+졸업 프로젝트를 수행하면서, 메인 페이지에 접속하면 여러 사용자들이 만든 여행 일정에 대한 전반적인 내용을 확인할 수 있도록 화면을 구성했습니다. 
+
+특히, 여행 일정에는 이미지 파일이 포함되어 있습니다. 그러다보니 사용자들이 많아져서 생성된 여행 일정이 늘어날 경우, 초기에 메인 페이지에 접속되는 시간이 더 오래 걸릴 것으로 예상했습니다. 
+
+성능을 최적화할 수 있는 방법을 찾던 중, Lazy Loading 기법을 적용하기로 결정했습니다.
+
+
+### Lazy Loading
+
+Lazy Loading은 웹 애플리케이션에서 이미지 같은 미디어 자원들을 지연해서 로드하는 기술입니다. 사용자가 스크롤 등의 동작을 수행 시, 뷰포트 내에 필요한 이미지만 로드되기 때문에 초기 페이지 로드 시간이 단축되고, 대역폭(bandwidth)를 절약할 수 있습니다.
+
+
+### React에서 Lazy Loading 구현하기
+
+React에서는 React Suspense와 React.lazy 함수를 사용하여 동적으로 컴포넌트를 가져오도록 수행할 수 있으며, 이를 dynamic import(동적 임포트)라고 합니다.
+
+```ts
+import React, { Suspense } from 'react';
+
+const LazyImageComponent = React.lazy(() => import ('./LazyImageComponent'));
+
+function App() {
+  return(
+    <div>
+      <Suspense fallback={<div>이미지를 로딩 중입니다.</div>}>
+         <LazyImageComponent />
+      </Suspense>
+    </div>
+  );
+  
+}
+
+export default App;
+```
+
+### Lazy Loading을 적용하며 개선할 수 있는 부분
+
+Lazy Loading을 적용함으로써 다음과 같은 사항들을 개선할 수 있습니다.
+
+1. FCP (First Contentful Paint)
+
+2. FMP (First Meaningful Paint)
+
+3. 이미지 및 자원 로드 시간 감소
+
+4. 페이지 로드 시간 감소
+
+
+
+
+
+
+### 참고 문헌
+
+[블로그 - 웹 성능 최적화를 위한 Image Lazy Loading 기법](https://helloinyong.tistory.com/297)
